@@ -1,0 +1,151 @@
+import time
+import random  
+import sys
+sys.setrecursionlimit(150000)
+
+# Function to import the file and convert the data into an array of integers
+def file_import(file_name): 
+    with open(file_name, 'r') as file:
+        arr_file = file.read().strip()  # Read the file content and strip any unnecessary whitespace
+        ls1 = arr_file  
+
+    arr = []
+    for item in ls1:
+        stripped_item = item.strip()    # Removing any blank spaces
+        if stripped_item.isdigit():     # Check if the stripped item is a digit
+            arr.append(int(stripped_item))  # Add the stripped element as an integer to the array
+    #print("\nUnsorted Array: ", arr)
+    return arr
+
+def file_import1(file_name1): 
+    with open(file_name1, 'r') as file1:
+        arr_file1 = file1.read().strip()  # Read the file content and strip any unnecessary whitespace
+        ls2 = arr_file1  
+
+    arr1 = []
+    for item in ls2:
+        stripped_item1 = item.strip()    # Removing any blank spaces
+        if stripped_item1.isdigit():     # Check if the stripped item is a digit
+            arr1.append(int(stripped_item1))  # Add the stripped element as an integer to the array
+    #print("\nUnsorted Array: ", arr)
+    return arr1
+
+
+
+# Function for Selection Sort
+def selection_sort(arr):
+    for i in range(len(arr)):
+        min_idx = i
+        for j in range(i + 1, len(arr)):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]  # Swap the minimum with the first element
+    return arr
+
+# Function for Quick Sort
+def quick_sort(arr):
+    def partition(arr, low, high):
+        pivot = arr[high] 
+        i = low - 1     
+
+        for j in range(low, high):
+            if arr[j] <= pivot:
+                i += 1
+                arr[i], arr[j] = arr[j], arr[i] 
+
+        arr[i + 1], arr[high] = arr[high], arr[i + 1]
+        return i + 1
+
+    def quick_sort_rec(A, low, high):
+        if low < high:
+            pi = partition(A, low, high)
+            quick_sort_rec(A, low, pi - 1)
+            quick_sort_rec(A, pi + 1, high)
+    quick_sort_rec(arr, 0, len(arr) - 1)
+    return arr
+
+# Function for Quick Sort
+def quick_sort1(arr1):
+    def partition(arr1, low, high):
+        pivot = arr1[high] 
+        i = low - 1     
+
+        for j in range(low, high):
+            if arr1[j] <= pivot:
+                i += 1
+                arr1[i], arr1[j] = arr1[j], arr1[i] 
+
+        arr1[i + 1], arr1[high] = arr1[high], arr1[i + 1]
+        return i + 1
+
+    def quick_sort_rec(A, low, high):
+        if low < high:
+            pi = partition(A, low, high)
+            quick_sort_rec(A, low, pi - 1)
+            quick_sort_rec(A, pi + 1, high)
+    quick_sort_rec(arr1, 0, len(arr1) - 1)
+    return arr1
+
+# Function for Randomized Quick Sort
+def randomized_quick_sort(arr):
+    def random_partition(A, low, high):
+        pivot_index = random.randint(low, high)
+        A[pivot_index], A[high] = A[high], A[pivot_index]  # Swap pivot with the last element
+        return partition(A, low, high)
+
+    def partition(A, low, high):
+        pivot = A[high]
+        i = low - 1
+        for j in range(low, high):
+            if A[j] < pivot:
+                i += 1
+                A[i], A[j] = A[j], A[i]
+        A[i + 1], A[high] = A[high], A[i + 1]
+        return i + 1
+
+    def randomized_quick_sort_helper(A, low, high):
+        if low < high:
+            pi = random_partition(A, low, high)
+            randomized_quick_sort_helper(A, low, pi - 1)
+            randomized_quick_sort_helper(A, pi + 1, high)
+
+    randomized_quick_sort_helper(arr, 0, len(arr) - 1)
+    return arr
+
+# Function to process file and return sorted array along with time taken for sorting
+def process_file(file_name, sort_function):
+    arr = file_import(file_name)  # Import file and get array
+    start_time = time.time_ns()   # Start time in nanoseconds
+    sorted_arr = sort_function(arr)  # Sort the array using the provided sort function
+    end_time = time.time_ns()     # End time in nanoseconds
+    time_taken = end_time - start_time  # Time taken for sorting
+    return sorted_arr, time_taken
+
+# List of text files to process
+files = ["input_16.txt", "input_32.txt", "input_64.txt", "input_128.txt", "input_256.txt", "input_512.txt", "input_1024.txt", "input_2048.txt", "input_4096.txt", "input_8192.txt"]  # List of files to import
+
+# Process each file sequentially with Selection Sort, Quick Sort, and Randomized Quick Sort
+for file_name in files:
+    print(f"\nProcessing {file_name} with Selection Sort:")
+    sorted_array_sel, time_taken_sel = process_file(file_name, selection_sort)
+    #print(f"Sorted array: {sorted_array_sel}")
+    print(f"Time taken: {time_taken_sel:.4f} nanoseconds")
+
+    print(f"Processing {file_name} with Quick Sort:")
+    sorted_array_qs, time_taken_qs = process_file(file_name, quick_sort)
+    #print(f"Sorted array: {sorted_array_qs}")
+    print(f"Time taken: {time_taken_qs:.4f} nanoseconds")
+
+    print(f"Processing {file_name} with Randomized Quick Sort:")
+    sorted_array_rqs, time_taken_rqs = process_file(file_name, randomized_quick_sort)
+    #print(f"Sorted array: {sorted_array_rqs}")
+    print(f"Time taken: {time_taken_rqs:.4f} nanoseconds")
+
+
+files1 = ["input_Random.txt", "input_ReversedSorted.txt", "input_sorted.txt"]
+
+for file_name1 in files1:
+    print(f"\nProcessing {file_name1} with Quick Sort:")
+    sorted_array_qs, time_taken_qs = process_file(file_name1, quick_sort1)
+    #print(f"Sorted array: {sorted_array_qs}")
+    print(f"Time taken: {time_taken_qs:.4f} nanoseconds")
